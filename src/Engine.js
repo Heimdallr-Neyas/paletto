@@ -1,4 +1,6 @@
+// Author : Benoit Brimeux
 'use strict';
+
 
 var Engine = function () {
 
