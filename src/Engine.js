@@ -6,7 +6,7 @@
 var Engine = function () {
 
 // private attributes and methods
-    var board;
+    var board, player;
 // public methods
 
     this.new_game = function () {
@@ -16,6 +16,7 @@ var Engine = function () {
             board[line] = new Array(6);
         }
         this.init_board();
+        player = 1;
     };
 
     this.get_board = function (line, column) {
@@ -83,5 +84,13 @@ var Engine = function () {
         return ret;
     };
 
+    this.check_player = function () {
+        return player;
+    };
+
+    this.check_corner = function (color) {
+        return (board[0][0] === color) || (board[0][5] === color) ||
+            (board[5][0] === color) || (board[5][5] === color);
+    };
 };
 
