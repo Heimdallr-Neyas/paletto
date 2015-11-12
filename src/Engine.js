@@ -1,5 +1,6 @@
-// Author : Benoit Brimeux
-'use strict';
+/**
+ * Created by benoit brimeux on 01/11/15.
+ */
 
 
 var Engine = function () {
@@ -14,7 +15,7 @@ var Engine = function () {
         for (line = 0; line < 6; line++) {
             board[line] = new Array(6);
         }
-        x.init_board();
+        this.init_board();
     };
 
     this.get_board = function (line, column) {
@@ -63,6 +64,23 @@ var Engine = function () {
         board[5][3] = "red";
         board[5][4] = "green";
         board[5][5] = "black";
+    };
+
+    this.check_near = function (line, column) {
+        return (board[line][column] === board[line][column + 1]) ||
+            (board[line][column] === board[line][column - 1]) ||
+            (board[line][column] === board[line - 1][column]) ||
+            (board[line][column] === board[line + 1][column]);
+    };
+
+    this.juxtaposition = function () {
+        var line, column, ret = false;
+        for (line = 1; line < 5; line++) {
+            for (column = 1; column < 5; column++) {
+                ret = ret || this.check_near(line, column);
+            }
+        }
+        return ret;
     };
 
 };
