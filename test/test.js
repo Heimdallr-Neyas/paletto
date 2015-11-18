@@ -17,4 +17,5 @@ PalettoTestCase.prototype.testStory3 = function () {
     x.play("A6");
     assertTrue(x.get_board(5, 0) === undefined);
     assertTrue(x.number_marble() === 35);
+    assertTrue(x.get_stroke(0) === "A6 yellow");
 };

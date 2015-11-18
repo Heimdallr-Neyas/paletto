@@ -30,6 +30,10 @@ var Engine = function () {
         return nb_marble;
     };
 
+    this.get_stroke = function (place) {
+        return stroke_list[place];
+    };
+
     this.init_board = function () {
         board[0][0] = "black";
         board[0][1] = "green";
@@ -100,20 +104,12 @@ var Engine = function () {
             (board[5][0] === color) || (board[5][5] === color);
     };
 
-    this.print_stroke_list = function () {
-        var i = stroke_list.length;
-        for(var j =0; j < i; j++){
-            console.log(stroke_list[j]);
-        }
-    };
-
     this.play = function (stroke) {
         var column = stroke.charCodeAt(0) - 65, line = stroke.charCodeAt(1) - 49,
             color = board[line][column];
         board[line][column] = undefined;
         stroke_list[36 - nb_marble] = stroke + " " + color;
         nb_marble--;
-
     };
 };
 
