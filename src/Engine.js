@@ -6,7 +6,8 @@
 var Engine = function () {
 
 // private attributes and methods
-    var board, player;
+    var board, player, nb_marble, stroke_list;
+
 // public methods
 
     this.new_game = function () {
@@ -16,11 +17,17 @@ var Engine = function () {
             board[line] = new Array(6);
         }
         this.init_board();
+        nb_marble = 36;
         player = 1;
+        stroke_list = new Array(36);
     };
 
     this.get_board = function (line, column) {
         return board[line][column];
+    };
+
+    this.number_marble = function () {
+        return nb_marble;
     };
 
     this.init_board = function () {
@@ -91,6 +98,22 @@ var Engine = function () {
     this.check_corner = function (color) {
         return (board[0][0] === color) || (board[0][5] === color) ||
             (board[5][0] === color) || (board[5][5] === color);
+    };
+
+    this.print_stroke_list = function () {
+        var i = stroke_list.length;
+        for(var j =0; j < i; j++){
+            console.log(stroke_list[j]);
+        }
+    };
+
+    this.play = function (stroke) {
+        var column = stroke.charCodeAt(0) - 65, line = stroke.charCodeAt(1) - 49,
+            color = board[line][column];
+        board[line][column] = undefined;
+        stroke_list[36 - nb_marble] = stroke + " " + color;
+        nb_marble--;
+
     };
 };
 
