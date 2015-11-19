@@ -6,7 +6,7 @@
 var Engine = function () {
 
 // private attributes and methods
-    var board, player, nb_marble, stroke_list;
+    var board, player, nb_marble, stroke_list, playable_stroke;
 
 // public methods
 
@@ -19,19 +19,16 @@ var Engine = function () {
         this.init_board();
         nb_marble = 36;
         player = 1;
+        this.init_array();
+    };
+
+    this.init_array = function () {
         stroke_list = new Array(36);
-    };
-
-    this.get_board = function (line, column) {
-        return board[line][column];
-    };
-
-    this.number_marble = function () {
-        return nb_marble;
-    };
-
-    this.get_stroke = function (place) {
-        return stroke_list[place];
+        playable_stroke = new Array(36);
+        playable_stroke[0] = this.create_string(0, 5);
+        playable_stroke[1] = this.create_string(0, 0);
+        playable_stroke[2] = this.create_string(5, 5);
+        playable_stroke[3] = this.create_string(5, 0);
     };
 
     this.init_board = function () {
@@ -78,6 +75,80 @@ var Engine = function () {
         board[5][5] = "black";
     };
 
+
+    this.get_board = function (line, column) {
+        return board[line][column];
+    };
+
+    this.get_number_marble = function () {
+        return nb_marble;
+    };
+
+    this.get_stroke = function (place) {
+        return stroke_list[place];
+    };
+
+    this.get_player = function () {
+        return player;
+    };
+
+    this.get_neighbour_number_parametred = function (line, column, boolvert1, boolvert2, boolhori1, boolhori2) {
+        var number = 4;
+        if (boolvert1) {
+            if (board[line - 1][column] === undefined) {
+                number--;
+            }
+        } else {
+            number--;
+        }
+
+        if (boolvert2) {
+            if (board[line + 1][column] === undefined) {
+                number--;
+            }
+        } else {
+            number--;
+        }
+
+        if (boolhori1) {
+            if (board[line][column - 1] === undefined) {
+                number--;
+            }
+        } else {
+            number--;
+        }
+
+        if (boolhori2) {
+            if (board[line][column + 1] === undefined) {
+                number--;
+            }
+        } else {
+            number--;
+        }
+
+        return number;
+    };
+
+    this.get_neighbour_number = function (line, column) {
+        var boolvert1 = true, boolvert2 = true, boolhori1 = true, boolhori2 = true;
+
+        if (line === 0) {
+            boolvert1 = false;
+        }
+        if (line === 5) {
+            boolvert2 = false;
+        }
+        if (column === 0) {
+            boolhori1 = false;
+        }
+        if (column === 5) {
+            boolhori2 = false;
+        }
+
+        return this.get_neighbour_number_parametred(line, column, boolvert1, boolvert2,
+            boolhori1, boolhori2);
+    };
+
     this.check_near = function (line, column) {
         return (board[line][column] === board[line][column + 1]) ||
             (board[line][column] === board[line][column - 1]) ||
@@ -95,21 +166,60 @@ var Engine = function () {
         return ret;
     };
 
-    this.check_player = function () {
-        return player;
-    };
+
 
     this.check_corner = function (color) {
         return (board[0][0] === color) || (board[0][5] === color) ||
             (board[5][0] === color) || (board[5][5] === color);
     };
 
-    this.play = function (stroke) {
-        var column = stroke.charCodeAt(0) - 65, line = stroke.charCodeAt(1) - 49,
-            color = board[line][column];
+    this.create_string = function (line, column) {
+        var stroke = String.fromCharCode(column + 65) + String.fromCharCode(line + 49), color = board[line][column];
+        return stroke + " " + color;
+    };
+
+    this.play = function (color) {
+        var stroke, i = 0;
+        while (playable_stroke[i] !== undefined) {
+            stroke = playable_stroke[i].split(" ");
+            if (stroke[1] === color) {
+                this.play_at_Place(stroke[0]);
+            }
+            i++;
+        }
+        this.possible_stroke();
+    };
+
+    this.play_at_Place = function (stroke) {
+        var column = stroke.charCodeAt(0) - 65, line = stroke.charCodeAt(1) - 49;
+        stroke_list[36 - nb_marble] = this.create_string(line, column);
         board[line][column] = undefined;
-        stroke_list[36 - nb_marble] = stroke + " " + color;
         nb_marble--;
+    };
+
+    this.possible_stroke = function () {
+        var line, column, i = 0;
+        for (line = 0; line < 6; line++) {
+            for (column = 0; column < 6; column++) {
+                if (this.get_neighbour_number(line, column) <= 2 && board[line][column] !== undefined) {
+                    playable_stroke[i] = this.create_string(line, column);
+                    i++;
+                }
+            }
+        }
+
+    };
+
+    this.possible_play = function (color){
+        var i = 0, stroke;
+        while (playable_stroke[i] !== undefined) {
+            stroke = playable_stroke[i].split(" ");
+            if (stroke[1] === color) {
+                return true;
+            }
+            i++;
+        }
+        return false;
     };
 };
 
