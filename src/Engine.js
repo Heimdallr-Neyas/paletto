@@ -92,61 +92,27 @@ var Engine = function () {
         return player;
     };
 
-    this.get_neighbour_number_parametred = function (line, column, boolvert1, boolvert2, boolhori1, boolhori2) {
+    this.check_neighbour = function (line, column, bool, increment_line, increment_column) {
+        if (!bool || board[line + increment_line][column + increment_column] === undefined) {
+            return -1;
+        }
+        return 0;
+    };
+
+    this.get_neighbour_number_parametred = function (line, column, boolvert1, boolvert2,
+                                                     boolhori1, boolhori2) {
         var number = 4;
-        if (boolvert1) {
-            if (board[line - 1][column] === undefined) {
-                number--;
-            }
-        } else {
-            number--;
-        }
-
-        if (boolvert2) {
-            if (board[line + 1][column] === undefined) {
-                number--;
-            }
-        } else {
-            number--;
-        }
-
-        if (boolhori1) {
-            if (board[line][column - 1] === undefined) {
-                number--;
-            }
-        } else {
-            number--;
-        }
-
-        if (boolhori2) {
-            if (board[line][column + 1] === undefined) {
-                number--;
-            }
-        } else {
-            number--;
-        }
-
+        number = number + this.check_neighbour(line, column, boolvert1, -1, 0);
+        number = number + this.check_neighbour(line, column, boolvert2, +1, 0);
+        number = number + this.check_neighbour(line, column, boolhori1, 0, -1);
+        number = number + this.check_neighbour(line, column, boolhori2, 0, +1);
         return number;
     };
 
     this.get_neighbour_number = function (line, column) {
-        var boolvert1 = true, boolvert2 = true, boolhori1 = true, boolhori2 = true;
-
-        if (line === 0) {
-            boolvert1 = false;
-        }
-        if (line === 5) {
-            boolvert2 = false;
-        }
-        if (column === 0) {
-            boolhori1 = false;
-        }
-        if (column === 5) {
-            boolhori2 = false;
-        }
-
-        return this.get_neighbour_number_parametred(line, column, boolvert1, boolvert2,
-            boolhori1, boolhori2);
+        return this.get_neighbour_number_parametred(line, column,
+            (line !== 0), (line !== 5),
+            (column !== 0), (column !== 5));
     };
 
     this.check_near = function (line, column) {
@@ -174,7 +140,8 @@ var Engine = function () {
     };
 
     this.create_string = function (line, column) {
-        var stroke = String.fromCharCode(column + 65) + String.fromCharCode(line + 49), color = board[line][column];
+        var stroke = String.fromCharCode(column + 65) +
+            String.fromCharCode(line + 49), color = board[line][column];
         return stroke + " " + color;
     };
 
@@ -201,16 +168,16 @@ var Engine = function () {
         var line, column, i = 0;
         for (line = 0; line < 6; line++) {
             for (column = 0; column < 6; column++) {
-                if (this.get_neighbour_number(line, column) <= 2 && board[line][column] !== undefined) {
+                if (this.get_neighbour_number(line, column) <= 2 &&
+                        board[line][column] !== undefined) {
                     playable_stroke[i] = this.create_string(line, column);
                     i++;
                 }
             }
         }
-
     };
 
-    this.possible_play = function (color){
+    this.possible_play = function (color) {
         var i = 0, stroke;
         while (playable_stroke[i] !== undefined) {
             stroke = playable_stroke[i].split(" ");
