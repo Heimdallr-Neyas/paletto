@@ -286,7 +286,7 @@ var Engine = function () {
         }
         return neighbors;
     };
-
+ 
     this.check_linkable = function (line, column) {
         if (this.get_neighbour_number(line, column) === 2) {
             var neighbors = this.return_neighbors(line, column), stroke_n = neighbors[0].split(" "),
