@@ -242,7 +242,7 @@ var Engine = function () {
         }
     };
 
-    this.check_win = function () {
+    this.check_win_full = function () {
         if (nb_marble === 0) {
             return player;
         }
@@ -275,7 +275,14 @@ var Engine = function () {
     };
 
     this.return_neighbors = function (line, column) {
-        var neighbors = new Array(this.get_neighbour_number(line, column)), i = 0;
+        var neighbors = new Array(this.get_neighbour_number(line, column)),
+            i = this.return_neighbors_vertical(neighbors, line, column);
+        this.return_neighbors_horizontal(neighbors, line, column, i);
+        return neighbors;
+    };
+
+    this.return_neighbors_vertical = function (neighbors, line, column) {
+        var i = 0;
         if (this.check_neighbour(line, column, (line !== 0), -1, 0) === 0) {
             neighbors[i] = this.create_string(line - 1, column);
             i++;
@@ -284,6 +291,10 @@ var Engine = function () {
             neighbors[i] = this.create_string(line + 1, column);
             i++;
         }
+        return i;
+    };
+
+    this.return_neighbors_horizontal = function (neighbors, line, column, i) {
         if (this.check_neighbour(line, column, (column !== 0), 0, -1) === 0) {
             neighbors[i] = this.create_string(line, column - 1);
             i++;
@@ -291,10 +302,9 @@ var Engine = function () {
         if (this.check_neighbour(line, column, (column !== 5), 0, +1) === 0) {
             neighbors[i] = this.create_string(line, column + 1);
         }
-        return neighbors;
     };
-    
- 
+
+
     this.check_linkable = function (line, column) {
         if (this.get_neighbour_number(line, column) === 2) {
             var neighbors = this.return_neighbors(line, column), stroke_n = neighbors[0].split(" "),
