@@ -42,3 +42,26 @@ PalettoTestCase.prototype.testStory5 = function () {
     assertTrue(y[5] === "B5 green 1");
     assertTrue(y[6] === "C6 black 1");
 };
+
+
+PalettoTestCase.prototype.testStory6 = function () {
+    x.init_board();
+    assertTrue(x.get_player() == 1);
+    x.play("black");
+    assertTrue(x.get_player() == 2);
+    x.play("green");
+    assertTrue(x.get_player() == 1);
+    x.play("yellow");
+    assertTrue(x.get_player() == 2);
+    x.play("blue");
+    assertTrue(x.get_player() == 1);
+    x.play("white");
+    assertTrue(x.get_player() == 2);
+    x.play("red");
+    assertTrue(x.get_player() == 1);
+    x.play("blue");
+    assertTrue(x.get_player() == 2);
+    x.play("yellow");
+    assertTrue(x.get_player() == 1);
+    x.play("black");
+};
