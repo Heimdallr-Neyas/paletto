@@ -258,12 +258,63 @@ var Engine = function () {
         for (line = 0; line < 6; line++) {
             for (column = 0; column < 6; column++) {
                 if (this.get_neighbour_number(line, column) <= 2 &&
-                        board[line][column] !== undefined) {
+                        board[line][column] !== undefined &&
+                        this.check_linkable(line, column)) {
                     playable_stroke[i] = this.create_string(line, column);
                     i++;
                 }
             }
         }
+    };
+
+    this.return_neighbors = function (line, column) {
+        var neighbors = new Array(this.get_neighbour_number(line, column)), i = 0;
+        if ( this.check_neighbour(line, column, (line !== 0), -1, 0) === 0) {
+            neighbors[i] = this.create_string(line - 1, column);
+            i++;
+        }
+        if ( this.check_neighbour(line, column, (line !== 5), +1, 0) === 0) {
+            neighbors[i] = this.create_string(line + 1, column);
+            i++;
+        }
+        if (this.check_neighbour(line, column, (column !== 0), 0, -1) === 0) {
+            neighbors[i] = this.create_string(line, column - 1);
+            i++;
+        }
+        if ( this.check_neighbour(line, column, (column !== 5), 0, +1) === 0) {
+            neighbors[i] = this.create_string(line, column + 1);
+        }
+        return neighbors;
+    };
+
+    this.check_linkable = function (line, column) {
+        if(this.get_neighbour_number(line, column) === 2){
+            var neighbors = this.return_neighbors(line, column);
+            var stroke_n = neighbors[0].split(" ");
+            var column1 = stroke_n[0].charCodeAt(0) - 65, line1 = stroke_n[0].charCodeAt(1) - 49;
+            var neighbors_of_neighbors1 = this.return_neighbors(line1, column1);
+
+            stroke_n = neighbors[1].split(" ");
+            column1 = stroke_n[0].charCodeAt(0) - 65;
+            line1 = stroke_n[0].charCodeAt(1) - 49;
+            var neighbors_of_neighbors2 = this.return_neighbors(line1, column1);
+
+            return this.have_in_common(neighbors_of_neighbors1, neighbors_of_neighbors2, this.create_string(line, column));
+            } else {
+            return true;
+        }
+    };
+
+    this.have_in_common = function(list1, list2, stroke){
+        var i = 0, j = 0;
+        for(i=0; i< list1.length; i++){
+            for(j=0; j< list2.length; j++){
+                if(list1[i] === list2[j] && list2[j] !== stroke){
+                    return true;
+                }
+            }
+        }
+        return false;
     };
 
     this.possible_play = function (color) {
