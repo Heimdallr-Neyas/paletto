@@ -6,7 +6,7 @@
 var Engine = function () {
 
 // private attributes and methods
-    var board, player, nb_marble, stroke_list, playable_stroke;
+    var board, player, nb_marble, stroke_list, playable_stroke, win = 0, player_win;
 
 // public methods
 
@@ -22,6 +22,10 @@ var Engine = function () {
         this.init_array();
     };
 
+    this.win = function () {
+        return win;
+    };
+
     this.init_array = function () {
         stroke_list = new Array(36);
         playable_stroke = new Array(36);
@@ -29,6 +33,18 @@ var Engine = function () {
         playable_stroke[1] = this.create_string(0, 0);
         playable_stroke[2] = this.create_string(5, 5);
         playable_stroke[3] = this.create_string(5, 0);
+        this.init_player_win();
+    };
+
+    this.init_player_win = function () {
+        var line, column;
+        player_win = new Array(2);
+        for (line = 0; line < 6; line++) {
+            player_win[line] = new Array(6);
+            for (column = 0; column < 6; column++) {
+                player_win[line][column] = 0;
+            }
+        }
     };
 
     this.init_board = function () {
@@ -58,7 +74,7 @@ var Engine = function () {
         board[3][2] = "red";
         board[3][3] = "green";
         board[3][4] = "blue";
-        board[3][5] = "red";
+        board[3][5] = "white";
 
         board[4][0] = "white";
         board[4][1] = "green";
@@ -192,16 +208,42 @@ var Engine = function () {
         return stroke + " " + color + " " + player;
     };
 
-    this.play = function (color) {
-        var stroke, i = 0;
+    this.play = function (color, stroke) {
+        //this.possible_stroke();
+        var stroke_possible, i = 0;
         while (playable_stroke[i] !== undefined) {
-            stroke = playable_stroke[i].split(" ");
-            if (stroke[1] === color) {
-                this.play_at_Place(stroke[0]);
+            stroke_possible = playable_stroke[i].split(" ");
+            if (stroke_possible[1] === color && stroke_possible[0] === stroke) {
+                this.play_at_Place(stroke_possible[0]);
+                this.player_win_add(stroke_possible[1]);
             }
             i++;
         }
+        this.check_win();
+        this.clean_possible_stroke();
         this.possible_stroke();
+    };
+
+    this.player_win_add = function (color) {
+        var color_list = ["yellow", "blue", "red", "white", "black", "green"];
+        player_win[player][color_list.indexOf(color)]++;
+    };
+
+    this.check_win = function () {
+        var line, column;
+
+        for (line = 0; line < 2; line++) {
+            for (column = 0; column < 6; column++) {
+                if (player_win[line][column] >= 6) {
+                    win = player;
+                    break;
+                }
+            }
+        }
+    };
+
+    this.clean_possible_stroke = function () {
+        playable_stroke = new Array(36);
     };
 
     this.play_at_Place = function (stroke) {
@@ -234,6 +276,14 @@ var Engine = function () {
             i++;
         }
         return false;
+    };
+
+    this.change_player = function () {
+        if (player === 1) {
+            player = 2;
+        } else {
+            player = 1;
+        }
     };
 };
 
