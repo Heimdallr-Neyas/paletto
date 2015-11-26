@@ -75,6 +75,49 @@ var Engine = function () {
         board[5][5] = "black";
     };
 
+    this.init_board2 = function () {
+        board[0][0] = undefined;
+        board[0][1] = undefined;
+        board[0][2] = undefined;
+        board[0][3] = "blue";
+        board[0][4] = "red";
+        board[0][5] = "white";
+
+        board[1][0] = undefined;
+        board[1][1] = undefined;
+        board[1][2] = undefined;
+        board[1][3] = "red";
+        board[1][4] = "yellow";
+        board[1][5] = undefined;
+
+        board[2][0] = undefined;
+        board[2][1] = undefined;
+        board[2][2] = "blue";
+        board[2][3] = "white";
+        board[2][4] = "black";
+        board[2][5] = undefined;
+
+        board[3][0] = "red";
+        board[3][1] = "black";
+        board[3][2] = "red";
+        board[3][3] = undefined;
+        board[3][4] = undefined;
+        board[3][5] = undefined;
+
+        board[4][0] = undefined;
+        board[4][1] = "green";
+        board[4][2] = "yellow";
+        board[4][3] = undefined;
+        board[4][4] = undefined;
+        board[4][5] = undefined;
+
+        board[5][0] = undefined;
+        board[5][1] = undefined;
+        board[5][2] = "black";
+        board[5][3] = undefined;
+        board[5][4] = undefined;
+        board[5][5] = undefined;
+    };
 
     this.get_board = function (line, column) {
         return board[line][column];
@@ -90,6 +133,10 @@ var Engine = function () {
 
     this.get_player = function () {
         return player;
+    };
+
+    this.get_playable_stroke = function () {
+        return playable_stroke;
     };
 
     this.check_neighbour = function (line, column, bool, increment_line, increment_column) {
@@ -142,7 +189,7 @@ var Engine = function () {
     this.create_string = function (line, column) {
         var stroke = String.fromCharCode(column + 65) +
             String.fromCharCode(line + 49), color = board[line][column];
-        return stroke + " " + color;
+        return stroke + " " + color + " " + player;
     };
 
     this.play = function (color) {
