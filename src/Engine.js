@@ -231,7 +231,7 @@ var Engine = function () {
 
     this.check_win = function () {
         var line, column;
-
+        win = this.check_win_full();
         for (line = 0; line < 2; line++) {
             for (column = 0; column < 6; column++) {
                 if (player_win[line][column] >= 6) {
@@ -240,6 +240,13 @@ var Engine = function () {
                 }
             }
         }
+    };
+
+    this.check_win = function () {
+        if (nb_marble === 0) {
+            return player;
+        }
+        return 0;
     };
 
     this.clean_possible_stroke = function () {
@@ -286,6 +293,7 @@ var Engine = function () {
         }
         return neighbors;
     };
+    
  
     this.check_linkable = function (line, column) {
         if (this.get_neighbour_number(line, column) === 2) {
